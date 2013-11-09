@@ -13,10 +13,9 @@ bool BuilderGenerator::isValid(unsigned int &i,
                                const vector<Node*>& nodes) {
     unsigned int oldI = i;
     do {
-        if (m_graph->getNodeLevel(nodes[i]) < nodes.size() - 1) {
-            if (!node) return true;
-            if (!m_graph->getEdge(node, nodes[i])) return true;
-        }
+        Node *n = nodes[i];
+        if (n != node && (!node || !m_graph->getEdge(node, n)))
+            return true;
         i += 1;
         if (i >= nodes.size()) i = 0;
     } while( i != oldI);
@@ -75,7 +74,9 @@ bool BuilderGenerator::generate() {
             createdEdges++;
             openNodes.push_back(n2);
         }
-        closedNodes.push_back(n);
+
+        if (m_graph->getNodeLevel(n) != m_nodesNum - 1) 
+            closedNodes.push_back(n);
     }
 
     // Add remaining nodes to closed nodes.
@@ -90,15 +91,25 @@ bool BuilderGenerator::generate() {
     while (createdEdges != edgeNum) {
         i = rand() % closedNodes.size();
         j = rand() % closedNodes.size();
+
         if (!isValid(i, nullptr, closedNodes)) return false;
         Node *n1 = closedNodes[i];
         if (!isValid(j, n1, closedNodes)) return false;
         Node *n2 = closedNodes[j];
+
         float prob = (rand() % 
                       static_cast<unsigned int>((m_maxProb - m_minProb) 
                       * 1000 + 1)) / 1000.0f + m_minProb;
+
         if (!m_graph->addEdge(n1, n2, Edge(prob))) return false;
         createdEdges++;
+
+        if (m_graph->getNodeLevel(n1) == m_nodesNum - 1) {
+            closedNodes.erase(closedNodes.begin()+i);
+            if (i<j) j--;
+        }
+        if (m_graph->getNodeLevel(n2) == m_nodesNum - 1)
+            closedNodes.erase(closedNodes.begin()+j);
     }
 
     return true;
