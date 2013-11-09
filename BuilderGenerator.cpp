@@ -27,7 +27,6 @@ bool BuilderGenerator::isValid(unsigned int &i,
 bool BuilderGenerator::generate() {
     // Check input data
     if (!m_graph) return false;
-    m_nodesNum = max(m_nodesNum,1u);
     if (m_edgesNum < m_nodesNum - 1) m_edgesNum = m_nodesNum - 1;
     if (m_edgesNum > m_nodesNum * (m_nodesNum - 1) / 2)
         m_edgesNum = m_nodesNum * (m_nodesNum - 1) / 2;
@@ -47,16 +46,18 @@ bool BuilderGenerator::generate() {
     // Create first node
     unsigned int maxLevel;
     unsigned int neighbours;
-
-    Node *n = m_graph->addNode(Node(createdNodes + startLabel));
-    if (!n) return false;
-    createdNodes++;
-    openNodes.push_back(n);
+    
+    if (m_nodesNum > 0) {
+        Node *n = m_graph->addNode(Node(createdNodes + startLabel));
+        if (!n) return false;
+        createdNodes++;
+        openNodes.push_back(n);
+    } else return true;
 
     // Create other nodes until we reach goal.
     while(createdNodes != m_nodesNum) {
         if (openNodes.empty()) return false;
-        n = *openNodes.begin();
+        Node *n = *openNodes.begin();
         openNodes.pop_front();
 
         maxLevel = min(m_nodesNum - createdNodes, m_maxTreeAdjNodes - 1);
