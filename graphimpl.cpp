@@ -172,6 +172,7 @@ bool GraphImpl::clone(Graph& graph) {
         if (it2 == newNodes.end()) return false;
         if (!graph.addEdge(it->second, it2->second, Edge(e->faultProb))) 
             return false;
+        e = static_cast<EdgeImpl*>(getNextEdge(e));
     }
 
     return true;
