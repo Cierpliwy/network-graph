@@ -1,4 +1,5 @@
-network_graph
+Network graph
 =============
 
-Simple analysis of networks faults
+Compilation `scons`/`scons cxx=g++ mode=debug` etc.
+Run and see graph demos: `./network 10 && dot -Txlib demo.dot`
