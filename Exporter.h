@@ -1,6 +1,6 @@
 #ifndef EXPORTER_H
 #define EXPORTER_H
-#include "graph.h"
+#include "Graph.h"
 #include <string>
 
 class Exporter

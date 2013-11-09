@@ -1,6 +1,6 @@
 #ifndef GRAPH_IMPL_H
 #define GRAPH_IMPL_H
-#include "graph.h"
+#include "Graph.h"
 #include <list>
 #include <vector>
 

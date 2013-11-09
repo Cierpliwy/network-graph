@@ -1,6 +1,6 @@
 #ifndef DOT_EXPORTER_H
 #define DOT_EXPORTER_H
-#include "exporter.h"
+#include "Exporter.h"
 
 class DOTExporter : public Exporter
 {

@@ -1,4 +1,4 @@
-#include "dotexporter.h"
+#include "DOTExporter.h"
 #include <sstream>
 #include <fstream>
 #include <iostream>

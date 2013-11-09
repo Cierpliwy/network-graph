@@ -1,7 +1,6 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-
 /**
  * @brief State of a node. Helpful for marking state in path based algorithms.
  */
@@ -11,7 +10,6 @@ enum class NodeState
     CLOSED,
     VISITED
 };
-
 
 /**
  * @brief General node structure.
@@ -99,7 +97,8 @@ public:
     virtual Node* getNextAdjNode(Node *node) = 0;
 
     /**
-     * @brief Add undirectional node to the graph.
+     * @brief Add undirectional node to the graph. It doesn't check if
+     *        edge currently exists. Use getEdge() function to check it.
      *
      * @param source Pointer to source node.
      * @param target Pointer to target node.

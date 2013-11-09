@@ -1,5 +1,5 @@
-#include "graphimpl.h"
-#include "dotexporter.h"
+#include "GraphImpl.h"
+#include "DOTExporter.h"
 
 int main(int argc, char *argv[])
 {
