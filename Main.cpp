@@ -1,37 +1,68 @@
 #include "GraphImpl.h"
 #include "DOTExporter.h"
+#include "BuilderGenerator.h"
+#include <iostream>
+#include <ctime>
+using namespace std;
+
+GraphImpl graph;
+DOTExporter dot;
+BuilderGenerator gen;
+
+void generate(const string& info) {
+    cout << info << "...";
+    if (gen.generate()) {
+        cout << "OK!";
+    } else {
+        cout << "ERR!";
+    }
+    cout << endl;
+}
 
 int main(int argc, char *argv[])
 {
-    GraphImpl impl;
-    DOTExporter dot;
-    auto n1 = impl.addNode(Node(1));
-    auto n2 = impl.addNode(Node(2));
-    auto n3 = impl.addNode(Node(3));
-    auto n4 = impl.addNode(Node(4));
-    auto n5 = impl.addNode(Node(5));
-    auto n6 = impl.addNode(Node(6));
-    auto n7 = impl.addNode(Node(7));
-    impl.addEdge(n1,n2, Edge(0.99));
-    impl.addEdge(n1,n6, Edge(0.32));
-    impl.addEdge(n4,n1, Edge(0.1));
-    impl.addEdge(n5,n3, Edge(0.2));
-    impl.addEdge(n7,n2, Edge(0.6));
-    dot.setGraph(impl);
-    dot.exportToFile("1.dot");
-    impl.addEdge(n3,n7, Edge(0.2));
-    dot.exportToFile("2.dot");
-    impl.addEdge(n4,n5, Edge(0.2));
-    dot.exportToFile("3.dot");
-    impl.removeNode(n6);
-    dot.exportToFile("4.dot");
-    impl.removeNode(n3);
-    impl.removeNode(n1);
-    dot.exportToFile("5.dot");
-    GraphImpl lol;
-    impl.clone(lol);
-    dot.setGraph(lol);
-    dot.exportToFile("5clone.dot");
+    if (argc != 2 ) {
+        cout << "Set n number!" << endl;
+        return EXIT_FAILURE;
+    }
 
-    return 0;
+    unsigned int n = atoi(argv[1]);
+
+    // Create set of 5 graphs
+    // ---------------------
+    // 1. Simple chain of X nodes.
+    gen.setSeed(time(nullptr));
+    gen.setCompleteness(0);
+    gen.setEdgesNum(0);
+    gen.setNodesNum(n);
+    gen.setGraph(graph);
+    gen.setMinProb(0.2);
+    gen.setMaxProb(1);
+    gen.setMaxTreeAdjNodes(2);
+    cout << "Nodes: " << graph.getNodesNum() << endl;
+    generate("Simple chain of X nodes");
+
+    // 2. Binary tree
+    gen.setMaxTreeAdjNodes(3);
+    cout << "Nodes: " << graph.getNodesNum() << endl;
+    generate("Binary tree");
+
+    // 3. Graph with only one cycle
+    gen.setEdgesNum(n);
+    generate("Graph with only one cycle");
+
+    // 4. Complete graph
+    gen.setCompleteness(1);
+    generate("Complete graph");
+
+    // 5. Random tree
+    gen.setMaxTreeAdjNodes(n);
+    gen.setCompleteness(0);
+    gen.setEdgesNum(0);
+    generate("Random tree");
+
+    dot.setGraph(graph);
+    dot.exportToFile("demo.dot");
+
+    return EXIT_SUCCESS;
 }

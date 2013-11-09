@@ -78,6 +78,22 @@ public:
     virtual Node* getNextNode(Node *node) = 0;
 
     /**
+     * @brief Return node level.
+     *
+     * @param node Pointer to graph's node
+     *
+     * @return Node level.
+     */
+    virtual unsigned int getNodeLevel(Node *node) = 0;
+
+    /**
+     * @brief Return total number of nodes.
+     *
+     * @return Total number of nodes.
+     */
+    virtual unsigned int getNodesNum() = 0;
+
+    /**
      * @brief Return first adjacent node. It doesn't have to be firstly 
      *        created adjacent node.
      *

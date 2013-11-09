@@ -11,7 +11,8 @@ Node* GraphImpl::addNode(const Node &node) {
         m_nodeHead->prevNode = n;
     }
     m_nodeHead = n; 
-    
+    m_nodesNum++;
+
     return n;
 }
 
@@ -30,6 +31,7 @@ bool GraphImpl::removeNode(Node *node) {
 
     // Remove node
     delete n;
+    m_nodesNum--;
 
     return true;
 }
@@ -56,6 +58,17 @@ Node* GraphImpl::getNextAdjNode(Node *node) {
     NodeImpl *n = static_cast<NodeImpl*>(node);
     if (++n->it == n->adjNodes.end()) return nullptr;
     return *n->it;
+}
+
+unsigned int GraphImpl::getNodeLevel(Node *node)
+{
+    if (!node) return 0;
+    NodeImpl *n = static_cast<NodeImpl*>(node);
+    return n->adjNodes.size();
+}
+
+unsigned int GraphImpl::getNodesNum() {
+    return m_nodesNum;
 }
 
 Edge* GraphImpl::addEdge(Node *source, Node *target, const Edge &edge)
@@ -150,6 +163,7 @@ void GraphImpl::reset() {
     while(auto n = getFirstNode()) removeNode(n);
     assert(!m_nodeHead);
     assert(!m_edgeHead);
+    m_nodesNum = 0;
 }
 
 bool GraphImpl::clone(Graph& graph) {

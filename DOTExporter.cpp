@@ -1,7 +1,6 @@
 #include "DOTExporter.h"
 #include <sstream>
 #include <fstream>
-#include <iostream>
 
 void DOTExporter::setGraph(Graph &graph) {
     m_graph = &graph;

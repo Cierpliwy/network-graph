@@ -23,7 +23,9 @@ struct NodeImpl : public Node
 {
     NodeImpl(const Node& node) :
         Node(node.id, node.state), 
-        it(adjNodes.begin()), nextNode(nullptr), prevNode(nullptr)  {}
+        it(adjNodes.begin()), 
+        nextNode(nullptr), 
+        prevNode(nullptr) {}
 
     std::list<NodeImpl*> adjNodes;
     std::list<NodeImpl*>::iterator it;
@@ -36,7 +38,9 @@ struct NodeImpl : public Node
 class GraphImpl : public Graph
 {
 public:
-    GraphImpl() : m_nodeHead(nullptr), m_edgeHead(nullptr) {}
+    GraphImpl() : m_nodeHead(nullptr), 
+                  m_edgeHead(nullptr),
+                  m_nodesNum(0) {}
 
     virtual ~GraphImpl() { reset(); }
 
@@ -46,6 +50,8 @@ public:
     virtual Node* getNextNode(Node *node); //O(1)
     virtual Node* getFirstAdjNode(Node *node); //O(1)
     virtual Node* getNextAdjNode(Node *node); //O(1)
+    virtual unsigned int getNodeLevel(Node *node); //O(1)
+    virtual unsigned int getNodesNum(); //O(1)
 
     virtual Edge* addEdge(Node *source, Node *target, const Edge &edge); //O(1)
     virtual bool removeEdge(Edge *edge); //O(d)
@@ -61,6 +67,7 @@ public:
 private:
     NodeImpl *m_nodeHead;
     EdgeImpl *m_edgeHead;
+    unsigned int m_nodesNum;
 };
 
 #endif //GRAPH_IMPL_H
