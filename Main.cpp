@@ -45,16 +45,17 @@ int main(int argc, char *argv[])
     // 3. Complete graph
     gen.setCompleteness(1);
     generate("Complete graph");
-
-    // 4. Random tree
-    gen.setMaxTreeAdjNodes(n);
-    gen.setCompleteness(0);
-    gen.setEdgesNum(0);
-    generate("Random tree");
     
-    // 5. Graph with only one cycle
+    // 4. Graph with only two cycles
     gen.setEdgesNum(n+1);
+    gen.setCompleteness(0);
     generate("Graph with only two cycles");
+
+    // 5. Half complete graph
+    gen.setEdgesNum(0);
+    gen.setCompleteness(0.5);
+    gen.setMaxTreeAdjNodes(n/4);
+    generate("Half complete graph");
 
     dot.setGraph(graph);
     cout << "Saving to 'demo.dot'...";
