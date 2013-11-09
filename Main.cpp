@@ -11,11 +11,8 @@ BuilderGenerator gen;
 
 void generate(const string& info) {
     cout << info << "...";
-    if (gen.generate()) {
-        cout << "OK!";
-    } else {
-        cout << "ERR!";
-    }
+    if (gen.generate()) cout << "OK!";
+    else cout << "ERR!";
     cout << endl;
 }
 
@@ -39,30 +36,31 @@ int main(int argc, char *argv[])
     gen.setMinProb(0.2);
     gen.setMaxProb(1);
     gen.setMaxTreeAdjNodes(2);
-    cout << "Nodes: " << graph.getNodesNum() << endl;
     generate("Simple chain of X nodes");
 
     // 2. Binary tree
     gen.setMaxTreeAdjNodes(3);
-    cout << "Nodes: " << graph.getNodesNum() << endl;
     generate("Binary tree");
 
-    // 3. Graph with only one cycle
-    gen.setEdgesNum(n);
-    generate("Graph with only one cycle");
-
-    // 4. Complete graph
+    // 3. Complete graph
     gen.setCompleteness(1);
     generate("Complete graph");
 
-    // 5. Random tree
+    // 4. Random tree
     gen.setMaxTreeAdjNodes(n);
     gen.setCompleteness(0);
     gen.setEdgesNum(0);
     generate("Random tree");
+    
+    // 5. Graph with only one cycle
+    gen.setEdgesNum(n+1);
+    generate("Graph with only two cycles");
 
     dot.setGraph(graph);
-    dot.exportToFile("demo.dot");
+    cout << "Saving to 'demo.dot'...";
+    if (dot.exportToFile("demo.dot")) cout << "OK!";
+    else cout << "ERR!";
+    cout << endl;
 
     return EXIT_SUCCESS;
 }
