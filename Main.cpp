@@ -51,11 +51,11 @@ int main(int argc, char *argv[])
     gen.setCompleteness(0);
     generate("Graph with only two cycles");
 
-    // 5. Half complete graph
+    // 5. Graph with 1/8 of max edges
     gen.setEdgesNum(0);
     gen.setCompleteness(0.5);
-    gen.setMaxTreeAdjNodes(n/4);
-    generate("Half complete graph");
+    gen.setMaxTreeAdjNodes(n/8);
+    generate("Graph with 1/8 of max edges");
 
     dot.setGraph(graph);
     cout << "Saving to 'demo.dot'...";
