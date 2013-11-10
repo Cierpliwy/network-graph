@@ -2,6 +2,7 @@
 #include <list>
 #include <cmath>
 #include <cstdlib>
+#include <ctime>
 using namespace std;
 
 static inline float clamp(float a) {
@@ -33,6 +34,10 @@ bool BuilderGenerator::generate() {
     clamp(m_completeness);
     clamp(m_minProb);
     clamp(m_maxProb);
+    if (!m_seed) {
+        srand(time(nullptr));
+        m_seed = rand();
+    }
     srand(m_seed);
 
     // Create simple tree.

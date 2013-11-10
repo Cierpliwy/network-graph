@@ -26,8 +26,8 @@ bool GraphImpl::removeNode(Node *node) {
     if (m_nodeHead == n) m_nodeHead = n->nextNode;
    
     // Remove edges
-    while(!n->adjEdges.empty())
-        assert(removeEdge(*n->adjEdges.begin()));
+    while(!n->adjNodes.empty())
+        assert(removeEdge(n->adjNodes.begin()->second));
 
     // Remove node
     delete n;
@@ -45,18 +45,19 @@ Node* GraphImpl::getNextNode(Node *node) {
     return static_cast<NodeImpl*>(node)->nextNode;
 }
 
-Node* GraphImpl::getFirstAdjNode(Node *node) {
-    if (!node) return nullptr;
+std::pair<Node*, Edge*> GraphImpl::getFirstAdjNode(Node *node) {
+    if (!node) return std::make_pair(nullptr, nullptr);
     NodeImpl *n = static_cast<NodeImpl*>(node);
     n->it = n->adjNodes.begin();
-    if (n->adjNodes.empty()) return nullptr;
+    if (n->adjNodes.empty()) return std::make_pair(nullptr, nullptr);
     return *n->it;
 }
 
-Node* GraphImpl::getNextAdjNode(Node *node) {
-    if (!node) return nullptr;
+std::pair<Node*, Edge*> GraphImpl::getNextAdjNode(Node *node) {
+    if (!node) return std::make_pair(nullptr, nullptr);
     NodeImpl *n = static_cast<NodeImpl*>(node);
-    if (++n->it == n->adjNodes.end()) return nullptr;
+    if (++n->it == n->adjNodes.end()) return std::make_pair(nullptr, nullptr);
+
     return *n->it;
 }
 
@@ -87,13 +88,11 @@ Edge* GraphImpl::addEdge(Node *source, Node *target, const Edge &edge)
     m_edgeHead = e;
 
     //Add adjacent nodes and edges
-    n1->adjNodes.push_back(n2);
-    if (n1->adjNodes.end() == n1->it) --n1->it;
-    n2->adjNodes.push_back(n1);
-    if (n2->adjNodes.end() == n2->it) --n2->it;
+    n1->adjNodes.push_back(std::make_pair(n2,e));
+    if (n1->adjNodes.end() == n1->it) n1->it = --n1->adjNodes.end();
+    n2->adjNodes.push_back(std::make_pair(n1,e));
+    if (n2->adjNodes.end() == n2->it) n2->it = --n2->adjNodes.end();
 
-    n1->adjEdges.push_back(e);
-    n2->adjEdges.push_back(e);
     e->source = n1;
     e->target = n2;
 
@@ -111,13 +110,11 @@ bool GraphImpl::removeEdge(Edge *edge)
     if (m_edgeHead == e) m_edgeHead = e->nextEdge;
 
     //Remove edges and adjacent nodes from lists
-    if (*e->source->it == e->target) ++e->source->it;
-    e->source->adjNodes.remove(e->target);
-    e->source->adjEdges.remove(e);
+    if (e->source->it->first == e->target) ++e->source->it;
+    e->source->adjNodes.remove(std::make_pair(e->target, e));
 
-    if (*e->target->it == e->source) ++e->target->it;
-    e->target->adjNodes.remove(e->source);
-    e->target->adjEdges.remove(e);
+    if (e->target->it->first == e->source) ++e->target->it;
+    e->target->adjNodes.remove(std::make_pair(e->source, e));
 
     //Remove edge
     delete e;
@@ -131,8 +128,9 @@ Edge* GraphImpl::getEdge(Node *source, Node *target)
     auto n1 = static_cast<NodeImpl*>(source);
     auto n2 = static_cast<NodeImpl*>(target);
 
-    for(auto &e : n1->adjEdges)
-        if (e->source == n2 || e->target == n2) return e;
+    for(auto &e : n1->adjNodes)
+        if (e.second->source == n2 || e.second->target == n2)
+            return e.second;
 
     return nullptr;
 }
@@ -171,7 +169,7 @@ bool GraphImpl::clone(Graph& graph) {
     std::map<unsigned int, Node*> newNodes;
     Node *n = getFirstNode();
     while(n) {
-        Node* node = graph.addNode(Node(n->id, n->state));
+        Node* node = graph.addNode(Node(n->id));
         if (!node) return false;
         auto res = newNodes.insert(std::make_pair(n->id, node));
         if (!res.second) return false;
@@ -184,7 +182,7 @@ bool GraphImpl::clone(Graph& graph) {
         if (it == newNodes.end()) return false;
         auto it2 = newNodes.find(e->target->id);
         if (it2 == newNodes.end()) return false;
-        if (!graph.addEdge(it->second, it2->second, Edge(e->faultProb))) 
+        if (!graph.addEdge(it->second, it2->second, Edge(e->reliability))) 
             return false;
         e = static_cast<EdgeImpl*>(getNextEdge(e));
     }

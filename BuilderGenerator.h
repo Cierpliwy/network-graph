@@ -24,6 +24,10 @@ public:
         m_seed = seed;
     }
 
+    virtual unsigned int getSeed() {
+        return m_seed;
+    }
+
     void setNodesNum(unsigned int nodesNum) {
         m_nodesNum = nodesNum;
     }

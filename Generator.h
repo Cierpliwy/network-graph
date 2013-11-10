@@ -6,6 +6,7 @@ class Generator
 {
 public:
     virtual void setSeed(unsigned int seed) = 0;
+    virtual unsigned int getSeed() = 0;
     virtual void setGraph(Graph &graph) = 0;
     virtual bool generate() = 0;
 };

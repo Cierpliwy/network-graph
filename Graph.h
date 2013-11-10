@@ -1,14 +1,31 @@
 #ifndef GRAPH_H
 #define GRAPH_H
+#include <utility>
 
 /**
- * @brief State of a node. Helpful for marking state in path based algorithms.
+ * @brief Structure representing color.
  */
-enum class NodeState
+struct Color
 {
-    OPEN,
-    CLOSED,
-    VISITED
+    Color() : r(0), g(0), b(0) {}
+    Color(unsigned char r, unsigned char g, unsigned char b) :
+        r(r), g(g), b(b) {}
+
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+};
+
+/**
+ * @brief Structure representing visual style.
+ */
+struct Style
+{
+    Style() : bg(255,255,255), penWidth(1.0f), dashed(false) {}
+    Color bg;
+    Color pen;
+    float penWidth;
+    bool dashed;
 };
 
 /**
@@ -16,10 +33,15 @@ enum class NodeState
  */
 struct Node
 {
-    Node(unsigned int ID) : id(ID), state(NodeState::OPEN) {}
-    Node(unsigned int ID, NodeState nodeState) : id(ID), state(nodeState) {}
+    Node(unsigned int ID) : 
+        id(ID), 
+        visited(false), 
+        connected(true) {}
+
     unsigned int id; //!< Node ID Label
-    NodeState state; 
+    Style style;
+    bool visited;
+    bool connected;
 };
 
 /**
@@ -27,8 +49,15 @@ struct Node
  */
 struct Edge
 {
-    Edge(float faultProbability) : faultProb(faultProbability) {}
-    float faultProb;
+    Edge(float reliability) : 
+        reliability(reliability),
+        connected(true),
+        broken(false) {}
+
+    float reliability;
+    bool connected;
+    bool broken;
+    Style style;
 };
 
 /**
@@ -94,23 +123,23 @@ public:
     virtual unsigned int getNodesNum() = 0;
 
     /**
-     * @brief Return first adjacent node. It doesn't have to be firstly 
-     *        created adjacent node.
+     * @brief Return first adjacent node and corresponding edge. It doesn't 
+     *        have to be firstly created adjacent node.
      *
      * @param node Neighbour node pointer.
      *
      * @return First adjacent node pointer or nullptr if not available.
      */
-    virtual Node* getFirstAdjNode(Node *node) = 0;
+    virtual std::pair<Node*, Edge*> getFirstAdjNode(Node *node) = 0;
 
     /**
-     * @brief Return next available adjacent node.
+     * @brief Return next available adjacent node and corresponding edge.
      *
      * @param node Neighbour node pointer.
      *
      * @return Next adjacent node pointer or nullptr if not available.
      */
-    virtual Node* getNextAdjNode(Node *node) = 0;
+    virtual std::pair<Node*, Edge*> getNextAdjNode(Node *node) = 0;
 
     /**
      * @brief Add undirectional node to the graph. It doesn't check if

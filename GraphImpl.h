@@ -9,7 +9,7 @@ struct NodeImpl;
 struct EdgeImpl : public Edge
 {
     EdgeImpl(const Edge& edge) :
-        Edge(edge.faultProb), source(nullptr), target(nullptr),
+        Edge(edge), source(nullptr), target(nullptr),
         prevEdge(nullptr), nextEdge(nullptr) {}
 
     NodeImpl *source;
@@ -22,14 +22,13 @@ struct EdgeImpl : public Edge
 struct NodeImpl : public Node
 {
     NodeImpl(const Node& node) :
-        Node(node.id, node.state), 
+        Node(node), 
         it(adjNodes.begin()), 
         nextNode(nullptr), 
         prevNode(nullptr) {}
 
-    std::list<NodeImpl*> adjNodes;
-    std::list<NodeImpl*>::iterator it;
-    std::list<EdgeImpl*> adjEdges;
+    std::list<std::pair<NodeImpl*, EdgeImpl*>> adjNodes;
+    std::list<std::pair<NodeImpl*, EdgeImpl*>>::iterator it;
 
     NodeImpl *nextNode;
     NodeImpl *prevNode;
@@ -48,8 +47,8 @@ public:
     virtual bool removeNode(Node *node); //O(d)
     virtual Node* getFirstNode(); //O(1)
     virtual Node* getNextNode(Node *node); //O(1)
-    virtual Node* getFirstAdjNode(Node *node); //O(1)
-    virtual Node* getNextAdjNode(Node *node); //O(1)
+    virtual std::pair<Node*, Edge*> getFirstAdjNode(Node *node); //O(1)
+    virtual std::pair<Node*, Edge*> getNextAdjNode(Node *node); //O(1)
     virtual unsigned int getNodeLevel(Node *node); //O(1)
     virtual unsigned int getNodesNum(); //O(1)
 

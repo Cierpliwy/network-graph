@@ -1,66 +1,85 @@
 #include "GraphImpl.h"
 #include "DOTExporter.h"
 #include "BuilderGenerator.h"
+#include "Algorithms.h"
 #include <iostream>
 #include <ctime>
 using namespace std;
 
-GraphImpl graph;
+GraphImpl graph,graph2;
 DOTExporter dot;
 BuilderGenerator gen;
 
-void generate(const string& info) {
-    cout << info << "...";
-    if (gen.generate()) cout << "OK!";
-    else cout << "ERR!";
-    cout << endl;
-}
-
-int main(int argc, char *argv[])
+int main(int, char **)
 {
-    if (argc != 2 ) {
-        cout << "Set n number!" << endl;
-        return EXIT_FAILURE;
-    }
+    GraphImpl graph;
+    DOTExporter dot;
+    BuilderGenerator gen;
+    GraphAlgorithms alg;
+    unsigned int x;
+    float y;
 
-    unsigned int n = atoi(argv[1]);
+    cout << "Number of nodes: ";
+    cin >> x;
+    gen.setNodesNum(x);
 
-    // Create set of 5 graphs
-    // ---------------------
-    // 1. Simple chain of X nodes.
-    gen.setSeed(time(nullptr));
-    gen.setCompleteness(0);
-    gen.setEdgesNum(0);
-    gen.setNodesNum(n);
+    cout << "Number of edges (use 0 for completeness): ";
+    cin >> x;
+    gen.setEdgesNum(x);
+
+    cout << "Graph completness (0..1 - 0 = use edges num): ";
+    cin >> y;
+    gen.setCompleteness(y);
+
+    cout << "Set seed (0 = random seed): ";
+    cin >> x;
+    gen.setSeed(x);
+
+    cout << "Set min. reliability of edge: ";
+    cin >> y;
+    gen.setMinProb(y);
+
+    cout << "Set max. reliability of edge: ";
+    cin >> y;
+    gen.setMaxProb(y);
+
+    cout << "Set max. number of ajacent nodes in tree pass: ";
+    cin >> x;
+    gen.setMaxTreeAdjNodes(x);
     gen.setGraph(graph);
-    gen.setMinProb(0.2);
-    gen.setMaxProb(1);
-    gen.setMaxTreeAdjNodes(2);
-    generate("Simple chain of X nodes");
 
-    // 2. Binary tree
-    gen.setMaxTreeAdjNodes(3);
-    generate("Binary tree");
+    cout << "Set number of iteration per node in Monte Carlo sim.: ";
+    cin >> x;
+    alg.setIterationsPerNode(x);
+    alg.setGraph(graph);
 
-    // 3. Complete graph
-    gen.setCompleteness(1);
-    generate("Complete graph");
-    
-    // 4. Graph with only two cycles
-    gen.setEdgesNum(n+1);
-    gen.setCompleteness(0);
-    generate("Graph with only two cycles");
-
-    // 5. Graph with 1/8 of max edges
-    gen.setEdgesNum(0);
-    gen.setCompleteness(0.5);
-    gen.setMaxTreeAdjNodes(n/8);
-    generate("Graph with 1/8 of max edges");
+    cout << "Use relative colors (0 = false): ";
+    cin >> x;
+    alg.setRelativeColors(x);
 
     dot.setGraph(graph);
-    cout << "Saving to 'demo.dot'...";
-    if (dot.exportToFile("demo.dot")) cout << "OK!";
-    else cout << "ERR!";
+
+    cout << "Generating graph... ";
+    cout.flush();
+    cout << (gen.generate() ? "OK" : "ERR");
+    cout << endl;
+    cout << "Used seed: " << gen.getSeed() << endl;
+
+    cout << "Is connected: ";
+    cout.flush();
+    cout << (alg.isConnected() ? "Yes" : "No");
+    cout << endl;
+    dot.exportToFile("graph.dot");
+
+    cout << "Reliability: ";
+    cout.flush();
+    cout << alg.monteCarlo() * 100 << "%" << endl;
+
+    cout << "Calculating edge & node weakness...";
+    cout.flush();
+    alg.edgeWeakness();
+    alg.nodeWeakness();
+    dot.exportToFile("weakness.dot");
     cout << endl;
 
     return EXIT_SUCCESS;
