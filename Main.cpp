@@ -4,6 +4,8 @@
 #include "Algorithms.h"
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
+
 using namespace std;
 
 GraphImpl graph,graph2;
@@ -18,6 +20,7 @@ int main(int, char **)
     GraphAlgorithms alg;
     unsigned int x;
     float y;
+    double d;
 
     cout << "Number of nodes: ";
     cin >> x;
@@ -48,9 +51,18 @@ int main(int, char **)
     gen.setMaxTreeAdjNodes(x);
     gen.setGraph(graph);
 
-    cout << "Set number of iteration per node in Monte Carlo sim.: ";
-    cin >> x;
-    alg.setIterationsPerNode(x);
+//    cout << "Set number of iteration per node in Monte Carlo sim.: ";
+//    cin >> x;
+//    alg.setIterationsPerNode(x);
+	cout << "Set limit of iteration in Monte Carlo sim.: ";
+	cin >> x;
+	alg.setIterationsLimit(x);
+	cout << "Set confidence in Monte Carlo sim.: ";
+	cin >> d;
+	alg.setConfidence(d);
+	cout << "Set precision in Monte Carlo sim.: ";
+	cin >> d;
+	alg.setPrecision(d);
     alg.setGraph(graph);
 
     cout << "Use relative colors (0 = false): ";
@@ -73,7 +85,8 @@ int main(int, char **)
 
     cout << "Reliability: ";
     cout.flush();
-    cout << alg.monteCarlo() * 100 << "%" << endl;
+    cout << alg.monteCarlo2() * 100 << "%" << " -+" << alg.getPrecision() <<
+    		" (" << alg.getConfidence() * 100 << "% confidence)" << endl;
 
     cout << "Calculating edge & node weakness...";
     cout.flush();
