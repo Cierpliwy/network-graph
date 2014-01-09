@@ -35,12 +35,19 @@ confidence <- function(vals) {
         }
         cat("w=",w," ","a=",good/length(vals),"\n")
         plot_intervals(vals,w)
-        readline(prompt="Press [enter] to continue")
+        x <- readLines(file("stdin"),1)
     }
     
 
 }
 
+intervals <- function(vals) {
+    t.test(vals, conf.level = 0.99)
+    t.test(vals, conf.level = 0.95)
+    t.test(vals, conf.level = 0.90)
+}
+
 
 vals = generate(10)
 confidence(vals)
+intervals(vals)
