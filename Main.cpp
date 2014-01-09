@@ -34,9 +34,13 @@ int main(int, char **)
     cin >> y;
     gen.setCompleteness(y);
 
-    cout << "Set seed (0 = random seed): ";
+    cout << "Set seed for generation (0 = random seed): ";
     cin >> x;
     gen.setSeed(x);
+
+    cout << "Set seed for computation (0 = random seed): ";
+    cin >> x;
+    alg.setSeed(x);
 
     cout << "Set min. reliability of edge: ";
     cin >> y;
@@ -83,10 +87,13 @@ int main(int, char **)
     cout << endl;
     dot.exportToFile("graph.dot");
 
-    cout << "Reliability: ";
+    cout << "### DONE ### " << endl;
     cout.flush();
-    cout << alg.monteCarlo2() * 100 << "%" << " -+" << alg.getPrecision() <<
-    		" (" << alg.getConfidence() * 100 << "% confidence)" << endl;
+    float res = alg.monteCarlo2();
+    cout << "Result: " << res * 100 << " %" << " -+" << alg.getPrecision() <<
+    		" (" << alg.getConfidence() * 100 << " 	% confidence)" << endl;
+
+    cout << "Alg seed: " << alg.getSeed() << endl;
 
     cout << "Calculating edge & node weakness...";
     cout.flush();

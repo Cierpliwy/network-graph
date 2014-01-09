@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <boost/math/distributions/normal.hpp>
+#include <random>
 
 using namespace std;
 
@@ -64,6 +65,11 @@ bool GraphAlgorithms::isConnected() {
 
 float GraphAlgorithms::monteCarlo()
 {
+    if (!m_seed) {
+        srand(time(nullptr));
+        m_seed = rand();
+    }
+
     unsigned long long acc = 0;
     for (unsigned int i = 0; i < m_iterationsPerNode; ++i) {
         Edge *e = m_graph->getFirstEdge();
@@ -79,12 +85,21 @@ float GraphAlgorithms::monteCarlo()
 
 float GraphAlgorithms::monteCarlo2()
 {
-    boost::math::normal_distribution<> nd(0.0,1.0);
+    if (!m_seed) {
+    	std::random_device rd;
+    	m_gen = std::mt19937(rd());
+    	m_seed = m_dist(m_gen) * 1000;
+    	srand(m_seed);
+    }
+
+    int acc = 0;
+
+/*    boost::math::normal_distribution<> nd(0.0,1.0);
 
     double t = boost::math::quantile(nd, 1.0 - (1.0-m_confidence)/2.0);
     unsigned int n = 1;
     int x = monteCarloIteration();
-    int acc = x;
+	int acc = x;
     double p = x;
     while ((n < 40) || (t*sqrt(p*(1-p)) > m_precision * sqrt(n) )) {
     	if (n >= m_iterationsLimit) {
@@ -103,20 +118,30 @@ float GraphAlgorithms::monteCarlo2()
     	p = p + (x-p)/n;
     }
 
+
 	cout << "n=" << n << endl;
 	cout << "t=" << t << " p=" << p <<" x=" << x <<endl;
 	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " m_precision * sqrt(n) =" << (m_precision * sqrt(n)) << endl <<endl;
 
+*/
+    int n = m_iterationsLimit;
+    ////////////////////////////////////////
+    for (int i=0; i<n;++i) {
+    	acc+= monteCarloIteration();
+    }
+    ////////////////////////////////////////
+
+
 
 	cout << "Calculated in " << n << " iterations." << endl;
 	cout << "Graph complete in " << acc << " iterations." << endl;
-	return p;
+	return acc/(float)n;
 }
 
 int GraphAlgorithms::monteCarloIteration() {
     Edge *e = m_graph->getFirstEdge();
     while(e) {
-        e->broken = ((rand() % 1001) / 1000.0f) > e->reliability;
+        e->broken = m_dist(m_gen) > e->reliability;
         e = m_graph->getNextEdge(e);
     }
     if (isConnected()) return 1;
@@ -200,4 +225,12 @@ void GraphAlgorithms::nodeWeakness()
             i.first->style.bg = getColor(i.second);
 
     }
+}
+
+void GraphAlgorithms::setSeed(unsigned int seed) {
+    m_seed = seed;
+}
+
+unsigned int GraphAlgorithms::getSeed() {
+    return m_seed;
 }

@@ -1,6 +1,7 @@
 #ifndef GRAPH_ALGORITHMS
 #define GRAPH_ALGORITHMS
 #include "Graph.h"
+#include <random>
 
 class GraphAlgorithms
 {
@@ -11,7 +12,8 @@ public:
         m_relativeColors(false),
         m_confidence(0.95),
         m_precision(0.1),
-        m_iterationsLimit(100000)
+        m_iterationsLimit(100000),
+        m_seed(0)
         {}
 
     void setRelativeColors(bool relative) {
@@ -52,6 +54,8 @@ public:
     float monteCarlo2();
     void edgeWeakness();
     void nodeWeakness();
+    void setSeed(unsigned int seed);
+    unsigned int getSeed();
 
 private:
     Graph *m_graph;
@@ -60,6 +64,9 @@ private:
     double m_confidence;
     double m_precision;
     bool m_relativeColors;
+    unsigned int m_seed;
+	std::mt19937 m_gen;
+	std::uniform_real_distribution<> m_dist;
 
 };
 

@@ -14,7 +14,11 @@ public:
         m_maxTreeAdjNodes(5),
         m_minProb(0.5),
         m_maxProb(0.5),
-        m_completeness(0.3) {}
+        m_completeness(0.3),
+        m_seed(0)
+    {}
+
+    virtual ~BuilderGenerator() {}
 
     virtual void setGraph(Graph &graph) {
         m_graph = &graph;
