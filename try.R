@@ -11,18 +11,36 @@ generate <- function(n) {
     as.real(res)
 }
 
-plot_intervals <- function(n, w) {
-    res = generate(n)
+plot_intervals <- function(vals, w) {
+    avg <- mean(vals)
 
-    L <- res-w
-    U <- res+w
+    L <- vals-w
+    U <- vals+w
 
-    plotCI(res:length(res), res, ui=U, li=L)
+    plotCI(1:length(vals), vals, ui=U, li=L)
 }
 
-confidence <- function() {
-    wArr <- c(10,1,0.1,0.1)
-    for ( i in wArr) {
-        i
+confidence <- function(vals) {
+    wArr <- c(10,1,0.1,0.01)
+    
+    avg <- mean(vals)
+    cat("average : ", avg,"\n")
+    
+    for ( w in wArr) {
+        good <-0
+        for(j in 1:length(vals)) {
+            if((avg > vals[j]-w) && (avg < vals[j]+w)) {
+                good<-good+1
+            }
+        }
+        cat("w=",w," ","a=",good/length(vals),"\n")
+        plot_intervals(vals,w)
+        readline(prompt="Press [enter] to continue")
     }
+    
+
 }
+
+
+vals = generate(10)
+confidence(vals)
