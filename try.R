@@ -34,8 +34,8 @@ confidence <- function(vals) {
             }
         }
         cat("w=",w," ","a=",good/length(vals),"\n")
-        plot_intervals(vals,w)
-        x <- readLines(file("stdin"),1)
+        #plot_intervals(vals,w)
+        #x <- readLines(file("stdin"),1)
     }
     
 

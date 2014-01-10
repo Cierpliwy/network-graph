@@ -94,23 +94,24 @@ float GraphAlgorithms::monteCarlo2()
 
     int acc = 0;
 
-/*    boost::math::normal_distribution<> nd(0.0,1.0);
-
+    boost::math::normal_distribution<> nd(0.0,1.0);
+    double w = m_precision / 100.0;
     double t = boost::math::quantile(nd, 1.0 - (1.0-m_confidence)/2.0);
     unsigned int n = 1;
     int x = monteCarloIteration();
-	int acc = x;
+	acc = x;
     double p = x;
-    while ((n < 40) || (t*sqrt(p*(1-p)) > m_precision * sqrt(n) )) {
+    while ((n < 1000) || (t*sqrt(p*(1-p)) > w * sqrt(n) )) {
     	if (n >= m_iterationsLimit) {
     		cout << "DEBUG: Exceeded iterations limit." << endl;
     		//TODO recalculate precision and confidence
     		break;
     	}
 
+//      //DEBUG
 //    	cout << "n=" << n << endl;
 //    	cout << "t=" << t << " p=" << p <<" x=" << x <<endl;
-//    	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " m_precision * sqrt(n) =" << (m_precision * sqrt(n)) << endl <<endl;
+//    	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " w * sqrt(n) =" << (w * sqrt(n)) << endl <<endl;
     	++n;
     	x = monteCarloIteration();
 
@@ -118,20 +119,10 @@ float GraphAlgorithms::monteCarlo2()
     	p = p + (x-p)/n;
     }
 
-
+    //DEBUG
 	cout << "n=" << n << endl;
 	cout << "t=" << t << " p=" << p <<" x=" << x <<endl;
-	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " m_precision * sqrt(n) =" << (m_precision * sqrt(n)) << endl <<endl;
-
-*/
-    int n = m_iterationsLimit;
-    ////////////////////////////////////////
-    for (int i=0; i<n;++i) {
-    	acc+= monteCarloIteration();
-    }
-    ////////////////////////////////////////
-
-
+	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " w * sqrt(n) =" << (w * sqrt(n)) << endl <<endl;
 
 	cout << "Calculated in " << n << " iterations." << endl;
 	cout << "Graph complete in " << acc << " iterations." << endl;

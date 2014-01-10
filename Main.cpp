@@ -87,7 +87,6 @@ int main(int, char **)
     cout << endl;
     dot.exportToFile("graph.dot");
 
-    cout << "### DONE ### " << endl;
     cout.flush();
     float res = alg.monteCarlo2();
     cout << "Result: " << res * 100 << " %" << " -+" << alg.getPrecision() <<
