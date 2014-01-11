@@ -63,6 +63,28 @@ bool GraphAlgorithms::isConnected() {
 
 }
 
+bool GraphAlgorithms::hasBridge()
+{
+    // Every edge is connected and not broken on start-up
+    Edge *e = m_graph->getFirstEdge();
+    while (e) {
+        e->broken = false;
+        e->connected = true;
+        e = m_graph->getNextEdge(e);
+    }
+
+    // Check if graph is connected even if one edge is disconnected
+    e = m_graph->getFirstEdge();
+    while (e) {
+        e->connected = false;
+        if (!isConnected()) return true;
+        e->connected = true;
+        e = m_graph->getNextEdge(e);
+    }
+
+    return false;
+}
+
 float GraphAlgorithms::monteCarlo()
 {
     if (!m_seed) {

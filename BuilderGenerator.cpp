@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+#include <random>
+#include <climits>
 using namespace std;
 
 static inline float clamp(float a) {
@@ -34,11 +36,14 @@ bool BuilderGenerator::generate() {
     clamp(m_completeness);
     clamp(m_minProb);
     clamp(m_maxProb);
+
+    uniform_int_distribution<> idis(0, INT_MAX);
     if (!m_seed) {
-        srand(time(nullptr));
-        m_seed = rand();
+        random_device rd;
+        mt19937 gen(rd());
+        m_seed = idis(gen) + 1;
     }
-    srand(m_seed);
+    mt19937 rnd(m_seed);
 
     // Create simple tree.
     unsigned int createdNodes = 0;
@@ -65,14 +70,14 @@ bool BuilderGenerator::generate() {
         openNodes.pop_front();
 
         maxLevel = min(m_nodesNum - createdNodes, m_maxTreeAdjNodes - 1);
-        neighbours = rand() % (maxLevel + 1);
+        neighbours = idis(rnd) % (maxLevel + 1);
         if (openNodes.empty() && !neighbours) neighbours = 1;
         
         for (auto i = 0u; i < neighbours; ++i) {
             Node *n2 = m_graph->addNode(Node(createdNodes + startLabel));
             if (!n2) return false;
             createdNodes++;
-            float prob = (rand() % 
+            float prob = (idis(rnd) % 
                           static_cast<unsigned int>((m_maxProb - m_minProb) 
                           * 1000 + 1)) / 1000.0f + m_minProb;
             if (!m_graph->addEdge(n, n2, Edge(prob))) return false;
@@ -94,15 +99,15 @@ bool BuilderGenerator::generate() {
 
     unsigned int i,j;
     while (createdEdges != edgeNum) {
-        i = rand() % closedNodes.size();
-        j = rand() % closedNodes.size();
+        i = idis(rnd) % closedNodes.size();
+        j = idis(rnd) % closedNodes.size();
 
         if (!isValid(i, nullptr, closedNodes)) return false;
         Node *n1 = closedNodes[i];
         if (!isValid(j, n1, closedNodes)) return false;
         Node *n2 = closedNodes[j];
 
-        float prob = (rand() % 
+        float prob = (idis(rnd) % 
                       static_cast<unsigned int>((m_maxProb - m_minProb) 
                       * 1000 + 1)) / 1000.0f + m_minProb;
 

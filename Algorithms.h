@@ -49,6 +49,7 @@ public:
     }
 
     bool isConnected();
+    bool hasBridge();
     float monteCarlo();
     int monteCarloIteration();
     float monteCarlo2();
