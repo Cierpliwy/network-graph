@@ -122,17 +122,17 @@ int main(int, char **)
     cout << "CALCULATING MONTE CARLO:" << endl;
 
     float res = alg.monteCarlo2();
-    cout << "- Result: " << res * 100 << "%" << " -+" << alg.getPrecision() 
-         << "% (" << alg.getConfidence() * 100 << "%" << " confidence)" << endl;
-
-    cout << "Alg seed: " << alg.getSeed() << endl;
-
+    cout << "- Result: " << res * 100 << " %" << " -+" << alg.getPrecision() 
+         << " % (" << alg.getConfidence() * 100 << "%" << " confidence)" << endl;
+    cout << "- Iterations: " << alg.getLastIterations() << endl;
+    cout << "- Algorithm seed: " << alg.getSeed() << endl;
+/*
     cout << "Calculating edge & node weakness...";
     cout.flush();
     alg.edgeWeakness();
     alg.nodeWeakness();
     dot.exportToFile("weakness.dot");
     cout << endl;
-
+*/
     return EXIT_SUCCESS;
 }

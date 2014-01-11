@@ -130,10 +130,6 @@ float GraphAlgorithms::monteCarlo2()
     		break;
     	}
 
-//      //DEBUG
-//    	cout << "n=" << n << endl;
-//    	cout << "t=" << t << " p=" << p <<" x=" << x <<endl;
-//    	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " w * sqrt(n) =" << (w * sqrt(n)) << endl <<endl;
     	++n;
     	x = monteCarloIteration();
 
@@ -141,13 +137,7 @@ float GraphAlgorithms::monteCarlo2()
     	p = p + (x-p)/n;
     }
 
-    //DEBUG
-	cout << "n=" << n << endl;
-	cout << "t=" << t << " p=" << p <<" x=" << x <<endl;
-	cout << "t*sqrt(p*(1-p)) = " << (t*sqrt(p*(1-p))) << " w * sqrt(n) =" << (w * sqrt(n)) << endl <<endl;
-
-	cout << "Calculated in " << n << " iterations." << endl;
-	cout << "Graph complete in " << acc << " iterations." << endl;
+    m_lastIterations = n;
 	return acc/(float)n;
 }
 

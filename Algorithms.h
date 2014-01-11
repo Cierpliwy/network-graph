@@ -48,6 +48,10 @@ public:
     	return m_confidence;
     }
 
+    double getLastIterations() const {
+        return m_lastIterations;
+    }
+
     bool isConnected();
     bool hasBridge();
     float monteCarlo();
@@ -68,6 +72,7 @@ private:
     unsigned int m_seed;
 	std::mt19937 m_gen;
 	std::uniform_real_distribution<> m_dist;
+    double m_lastIterations;
 
 };
 
