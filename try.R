@@ -42,7 +42,7 @@ confidence <- function(vals) {
 
 }
 
-confidenceTest <- function(conf, prec, iter=200, nodes=15, edges=27, 
+confidenceTest <- function(conf=0.95, prec=0.1, iter=100, nodes=15, edges=27, 
         genSeed=1203238904, maxIter=1000000) {
     rArr <- c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.99)
     passed=TRUE

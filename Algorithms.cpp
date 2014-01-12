@@ -125,7 +125,7 @@ float GraphAlgorithms::monteCarlo2()
     double p = x;
     while ((n < 1000) || (t*sqrt(p*(1-p)) > w * sqrt(n) )) {
     	if (n >= m_iterationsLimit) {
-    		cout << "DEBUG: Exceeded iterations limit." << endl;
+    		cerr << "WARNING: Exceeded iterations limit." << endl;
     		//TODO recalculate precision and confidence
     		break;
     	}
