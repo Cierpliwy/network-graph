@@ -42,26 +42,33 @@ confidence <- function(vals) {
 
 }
 
-confidenceTest <- function(conf) {
-    rArr <- c(0.01,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.99)
+confidenceTest <- function(conf, prec, iter=200, nodes=15, edges=27, 
+        genSeed=1203238904, maxIter=1000000) {
+    rArr <- c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.99)
     passed=TRUE
-    
+   
+    cat(">>> CONFIDENCE TEST <<<\n")
+    cat("Each parameters will be generate ", iter,"samples\n")
+    cat("Nodes: ", nodes, " edges: ", edges,"\n")
+    cat("Generation seed: ", genSeed, " maximum iterations: ", maxIter,"\n")
+    cat("Confidence: ", conf, " precision: ", prec,"\n")
+    cat("Link reliability: ", rArr,"\n\n")
     for(r in rArr){
-        input <- genInputString(15,27,0,1203238904,0,r,r, 5, 1000000, conf, 0.1,1)
+        input <- genInputString(nodes,edges,0,genSeed,0,r,r, 5, maxIter, conf, prec,1)
                               
         data <- NULL
-        for (i in 1:100) {
+        for (i in 1:iter) {
             data <- c(data, system(paste0("echo \"",input,"\" | ./network | grep Result: | cut -d ' ' -f 3"), intern=TRUE))
         }
         data <- as.numeric(data)
-        cat("Calculating 100 samples, link reliability ",r," data=",data,"\n")
-        rconf = confidence(data, 1, conf)
+        cat("Calculating ",iter," samples, link reliability ",r,"\n")
+        rconf = confidence(data, prec)
         
         #cat("Give condidence=", conf," Real confidence=",rconf,"\n")
         if(conf > rconf) {
             passed = FALSE;
             
-            cat("FAILED : conf", conf,"real_conf=", rconf, " link reliability", r, " results of algorithm: ", data, "\n")
+            cat("FAILED : conf", conf,"real_conf=", rconf, " link reliability", r, "\n")
         } else {
             cat("PASSED : conf=", conf,"real_conf=", rconf,"\n")
         }
@@ -74,7 +81,7 @@ confidenceTest <- function(conf) {
     }
 }
 
-confidence <- function(vals, w, conf) { 
+confidence <- function(vals, w) { 
     avg <- mean(vals)
 
     good <-0
@@ -84,7 +91,6 @@ confidence <- function(vals, w, conf) {
         }
     }
 
-    cat("good=",good, "all=",length(vals),"\n")
     good/length(vals)
 }
 
