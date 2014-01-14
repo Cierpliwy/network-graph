@@ -60,7 +60,13 @@ reliabilityTest <- function(steps)
     iterations <- c()
     for( i in steps) {
         print(paste0("Calculating step: ",i,"..."))
-        input <- genInputString(15,27,0,1912548602,0,i,i, 5, 1000000, 0.95,
+        #input <- genInputString(15,27,0,1912548602,0,i,i, 5, 1000000, 0.95,
+        #                         0.1,1)
+        #input <- genInputString(25,40,0,210451613,0,i,i, 5, 1000000, 0.95,
+        #                         0.1,1)
+        #input <- genInputString(50,100,0,1469296626,0,i,i, 5, 1000000, 0.95,
+        #                         0.1,1)
+        input <- genInputString(200,500,0,2050012841,0,i,i, 5, 1000000, 0.95,
                                  0.1,1)
         out <- system(paste0("echo \"",input,"\" | ./network"), intern = TRUE)
         results <- c(results, unlist(strsplit(out[21], " "))[3])
@@ -69,9 +75,43 @@ reliabilityTest <- function(steps)
     list(results,iterations)
 }
 
-reliabilityGraph <- function(steps, results, iterations)
+reliabilityGraph <- function(steps, res1, res2, res3, res4, ite1, ite2, ite3, ite4)
 {
-    rf1 <- data.frame(x=steps, y=as.numeric(results), text="Niezawodność sieci (%)")
+    rf1 <- data.frame(x=as.vector(steps), 
+                      y=as.numeric(res1), 
+                      y2=as.numeric(res2), 
+                      y3=as.numeric(res3), 
+                      y4=as.numeric(res4), 
+                      text="Niezawodność sieci (\\%)")
+    rf2 <- data.frame(x=as.vector(steps), 
+                      y=as.numeric(ite1), 
+                      y2=as.numeric(ite2), 
+                      y3=as.numeric(ite3), 
+                      y4=as.numeric(ite4), 
+                      text="Iteracje")
+   
+    rf <- rbind(rf1, rf2)
+
+    ggplot(rf, aes(x,y)) + 
+    facet_grid(text ~ ., scale = "free") +
+    theme(legend.title=element_blank()) +
+    geom_line(data = rf1, aes(x = x, y = y, color="graf A")) +
+    geom_line(data = rf2, aes(x = x, y = y, color="graf A")) +
+    geom_line(data = rf1, aes(x = x, y = y2, color="graf B")) +
+    geom_line(data = rf2, aes(x = x, y = y2, color="graf B")) +
+    geom_line(data = rf1, aes(x = x, y = y3, color="graf C")) +
+    geom_line(data = rf2, aes(x = x, y = y3, color="graf C")) +
+    geom_line(data = rf1, aes(x = x, y = y4, color="graf D")) +
+    geom_line(data = rf2, aes(x = x, y = y4, color="graf D")) +
+    xlab("Prawdopodobieństwo połączenia") +
+    scale_x_continuous(breaks=seq(0,1,0.1)) +
+    scale_colour_manual(values=c("1","2","3","4")) +
+    ylab("")
+}
+
+reliabilityGraph2 <- function(steps, results, iterations)
+{
+    rf1 <- data.frame(x=steps, y=as.numeric(results), text="Niezawodność sieci (\\%)")
     rf2 <- data.frame(x=steps, y=as.numeric(iterations), text="Iteracje")
    
     rf <- rbind(rf1, rf2)
@@ -84,7 +124,7 @@ reliabilityGraph <- function(steps, results, iterations)
     layer(data = rf2, geom = "line", color="red") +
     layer(data = rf2, geom = "point", size=2, color="red") +
     layer(data = rf2, geom = "point", size=1, color="white") +
-    xlab("Prawdnopodobieństwo połączenia") +
+    xlab("Prawdopodobieństwo połączenia") +
     scale_x_continuous(breaks=seq(0,1,0.1)) +
     geom_area(alpha = 0.2) +
     ylab("")

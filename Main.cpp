@@ -126,13 +126,13 @@ int main(int, char **)
          << " % (" << alg.getConfidence() * 100 << "%" << " confidence)" << endl;
     cout << "- Iterations: " << alg.getLastIterations() << endl;
     cout << "- Algorithm seed: " << alg.getSeed() << endl;
-/*
+
     cout << "Calculating edge & node weakness...";
     cout.flush();
     alg.edgeWeakness();
     alg.nodeWeakness();
     dot.exportToFile("weakness.dot");
     cout << endl;
-*/
+
     return EXIT_SUCCESS;
 }
